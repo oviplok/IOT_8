@@ -6,7 +6,7 @@ amount_of_records = 120  # Число записей
 
 # Класс сборщика данных
 # Параметр - номер чемодана
-pr8dc = Collector(13, {
+dc = Collector(13, {
     '/devices/wb-msw-v3_21/controls/Sound Level': 'sound',
     '/devices/wb-ms_11/controls/Illuminance': 'illuminance',
     '/devices/wb-adc/controls/Vin': 'Vin'
@@ -30,7 +30,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
 
     # Подключение ко всем заданным выше топикам
-    for topic in pr8dc.sub_topics.keys():
+    for topic in dc.sub_topics.keys():
         client.subscribe(topic)
 
 
@@ -47,7 +47,7 @@ def on_message(client, userdata, msg):
 
     print(topic + " " + payload)
 
-    pr8dc.update_dict(payload, topic)
+    dc.update_dict(payload, topic)
 
 
 def main():
@@ -62,9 +62,9 @@ def main():
     previous_time = time.time()  # Время последней записи
     while current_records < amount_of_records:
         if time.time() - previous_time > 5.0:
-            pr8dc.update_list()  # Обновление списка записей
-            pr8dc.write_json('data_for_plots.json')  # Запсиь в json файл
-            pr8dc.write_xml('data_for_plots.xml')  # Запсиь в xml файл
+            dc.update_list()  # Обновление списка записей
+            dc.write_json('data_for_plots.json')  # Запсиь в json файл
+            dc.write_xml('data_for_plots.xml')  # Запсиь в xml файл
             current_records += 1
             previous_time = time.time()
             print("Выполнена запись " + str(current_records))
